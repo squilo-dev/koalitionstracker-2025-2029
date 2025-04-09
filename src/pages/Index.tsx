@@ -72,7 +72,7 @@ const Index = () => {
         <div className="mb-8">
           <Tabs defaultValue="themes" value={activeTab} onValueChange={value => setActiveTab(value as 'themes' | 'list')}>
             <TabsList className="mb-6">
-              <TabsTrigger value="themes">Nach Ministerium</TabsTrigger>
+              <TabsTrigger value="themes">Nach Thema</TabsTrigger>
               <TabsTrigger value="list">Alle Vorhaben</TabsTrigger>
             </TabsList>
             
