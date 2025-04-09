@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Initiative, InitiativeStatus, ThemeCategory, initiatives as initialInitiatives, themeLabels } from '@/data/coalitionData';
 import FilterSearchBar from '@/components/FilterSearchBar';
@@ -9,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
 import OverallProgress from '@/components/OverallProgress';
 import { ExternalLink, Flag } from 'lucide-react';
-
 const Index = () => {
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,13 +60,7 @@ const Index = () => {
         
         {/* Status Chart - Moved from list tab to here */}
         <div className="mb-8">
-          <StatusBarChart 
-            initiatives={filteredInitiatives} 
-            category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} 
-            title="Statusverteilung" 
-            className="mb-6"
-            showPercentages={true}
-          />
+          <StatusBarChart initiatives={filteredInitiatives} category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} title="Statusverteilung" className="mb-6" showPercentages={true} />
         </div>
         
         {/* Filter and Search */}
@@ -118,10 +110,10 @@ const Index = () => {
       {/* Custom footer with German flag */}
       <footer className="mt-auto bg-gray-100 py-4">
         <div className="container mx-auto px-4 flex justify-center items-center gap-2">
-          <p className="text-muted-foreground text-sm">Entwickelt in Deutschland für Deutschland</p>
-          <Flag className="h-5 w-5 text-black" />
+          <p className="text-muted-foreground text-sm">Entwickelt in Deutschland für Deutschland 🇩🇪</p>
+          
         </div>
-        <div className="bg-gradient-to-r from-black via-red-600 to-[#FFCC00] h-2 mt-4" />
+        
       </footer>
     </div>;
 };
