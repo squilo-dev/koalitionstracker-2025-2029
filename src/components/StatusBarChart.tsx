@@ -10,13 +10,15 @@ interface StatusBarChartProps {
   category?: ThemeCategory;
   title?: string;
   className?: string;
+  showPercentages?: boolean;
 }
 
 const StatusBarChart: React.FC<StatusBarChartProps> = ({ 
   initiatives, 
   category, 
   title = "Statusverteilung", 
-  className 
+  className,
+  showPercentages = false
 }) => {
   const statusCounts = getStatusCountsByCategory(initiatives, category);
   const total = Object.values(statusCounts).reduce((sum, count) => sum + count, 0);
@@ -94,7 +96,9 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
                 <div key={status} className="flex items-center gap-1.5">
                   <div className={cn("w-3 h-3 rounded-sm", getStatusColor(status))}></div>
                   <span className="text-sm">
-                    {statusLabels[status]} ({count})
+                    {statusLabels[status]} {showPercentages 
+                      ? `(${percentage.toFixed(1)}%)` 
+                      : `(${count})`}
                   </span>
                 </div>
               ) : null;

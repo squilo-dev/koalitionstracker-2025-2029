@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Initiative, InitiativeStatus, ThemeCategory, initiatives as initialInitiatives, themeLabels } from '@/data/coalitionData';
 import FilterSearchBar from '@/components/FilterSearchBar';
@@ -7,6 +8,8 @@ import CategoryBarCharts from '@/components/CategoryBarCharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
 import OverallProgress from '@/components/OverallProgress';
+import { ExternalLink, Flag } from 'lucide-react';
+
 const Index = () => {
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,12 +50,25 @@ const Index = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-3 text-coalition-dark">
             Koalitionstracker 2025–2029
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Verfolgen Sie den Fortschritt bei der Umsetzung des Koalitionsvertrags der Bundesregierung aus CDU/CSU und SPD.</p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Verfolgen Sie den Fortschritt bei der Umsetzung des <a href="https://www.wiwo.de/downloads/30290756/6/koalitionsvertrag-2025.pdf" target="_blank" rel="noopener noreferrer" className="text-coalition-primary underline inline-flex items-center">Koalitionsvertrags <ExternalLink className="h-3 w-3 ml-0.5" /></a> der Bundesregierung aus CDU/CSU und SPD.
+          </p>
         </div>
         
         {/* Overall Progress Bar */}
         <div className="mb-8">
           <OverallProgress initiatives={initialInitiatives} />
+        </div>
+        
+        {/* Status Chart - Moved from list tab to here */}
+        <div className="mb-8">
+          <StatusBarChart 
+            initiatives={filteredInitiatives} 
+            category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} 
+            title="Statusverteilung" 
+            className="mb-6"
+            showPercentages={true}
+          />
         </div>
         
         {/* Filter and Search */}
@@ -92,8 +108,6 @@ const Index = () => {
                   {categoryFilter !== 'all' ? `${themeLabels[categoryFilter as ThemeCategory]} (${filteredInitiatives.length} Vorhaben)` : `Alle Vorhaben (${filteredInitiatives.length})`}
                 </h2>
                 
-                <StatusBarChart initiatives={filteredInitiatives} category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} title="Statusverteilung" className="mb-6" />
-                
                 <InitiativesList initiatives={filteredInitiatives} />
               </div>
             </TabsContent>
@@ -101,9 +115,13 @@ const Index = () => {
         </div>
       </div>
       
-      {/* German flag-inspired footer */}
-      <footer className="mt-auto">
-        <div className="bg-gradient-to-r from-black via-red-600 to-[#FFCC00] h-2" />
+      {/* Custom footer with German flag */}
+      <footer className="mt-auto bg-gray-100 py-4">
+        <div className="container mx-auto px-4 flex justify-center items-center gap-2">
+          <p className="text-muted-foreground text-sm">Entwickelt in Deutschland für Deutschland</p>
+          <Flag className="h-5 w-5 text-black" />
+        </div>
+        <div className="bg-gradient-to-r from-black via-red-600 to-[#FFCC00] h-2 mt-4" />
       </footer>
     </div>;
 };
