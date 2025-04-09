@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Initiative, InitiativeStatus, ThemeCategory, initiatives as initialInitiatives, themeLabels } from '@/data/coalitionData';
 import FilterSearchBar from '@/components/FilterSearchBar';
@@ -8,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
 import OverallProgress from '@/components/OverallProgress';
 import { ExternalLink, Flag } from 'lucide-react';
+
 const Index = () => {
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +41,12 @@ const Index = () => {
     setStatusFilter('all');
     setCategoryFilter('all');
   };
+
+  // Toggle category selection
+  const handleCategorySelect = (category: ThemeCategory) => {
+    setCategoryFilter(prevCategory => prevCategory === category ? 'all' : category);
+  };
+
   return <div className="min-h-screen flex flex-col">
       {/* German flag-inspired header */}
       <header className="bg-gradient-to-r from-black via-red-600 to-[#FFCC00] h-2" />
@@ -58,26 +66,47 @@ const Index = () => {
           <OverallProgress initiatives={initialInitiatives} />
         </div>
         
-        {/* Status Chart - Moved from list tab to here */}
+        {/* Status Chart - Renamed to Gesamtfortschritt */}
         <div className="mb-8">
-          <StatusBarChart initiatives={filteredInitiatives} category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} title="Statusverteilung" className="mb-6" showPercentages={true} />
+          <StatusBarChart initiatives={filteredInitiatives} category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} title="Gesamtfortschritt" className="mb-6" showPercentages={true} />
         </div>
         
-        {/* Filter and Search */}
+        {/* Combined Filter, Search, and Tabs Layout */}
         <div className="mb-8">
-          <FilterSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} hasFilters={hasFilters} clearFilters={clearFilters} />
+          <div className="flex flex-col space-y-4">
+            {/* First row: Search and filters */}
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <FilterSearchBar 
+                searchQuery={searchQuery} 
+                setSearchQuery={setSearchQuery} 
+                statusFilter={statusFilter} 
+                setStatusFilter={setStatusFilter} 
+                categoryFilter={categoryFilter} 
+                setCategoryFilter={setCategoryFilter} 
+                hasFilters={hasFilters} 
+                clearFilters={clearFilters} 
+              />
+              
+              {/* Tab navigation moved to same row as filters */}
+              <div className="shrink-0">
+                <TabsList>
+                  <TabsTrigger value="themes" onClick={() => setActiveTab('themes')}>Nach Ressort</TabsTrigger>
+                  <TabsTrigger value="list" onClick={() => setActiveTab('list')}>Alle Vorhaben</TabsTrigger>
+                </TabsList>
+              </div>
+            </div>
+          </div>
         </div>
         
         {/* Main Content */}
         <div className="mb-8">
-          <Tabs defaultValue="themes" value={activeTab} onValueChange={value => setActiveTab(value as 'themes' | 'list')}>
-            <TabsList className="mb-6">
-              <TabsTrigger value="themes">Nach Ressort</TabsTrigger>
-              <TabsTrigger value="list">Alle Vorhaben</TabsTrigger>
-            </TabsList>
-            
+          <Tabs value={activeTab} onValueChange={value => setActiveTab(value as 'themes' | 'list')}>
             <TabsContent value="themes" className="space-y-8">
-              <ThemeBasedOverview initiatives={filteredInitiatives} selectedCategory={categoryFilter} onCategorySelect={setCategoryFilter} />
+              <ThemeBasedOverview 
+                initiatives={filteredInitiatives} 
+                selectedCategory={categoryFilter} 
+                onCategorySelect={handleCategorySelect} 
+              />
               
               {categoryFilter !== 'all' && <div className="mt-8">
                   <h2 className="text-xl font-semibold mb-4">
