@@ -6,7 +6,7 @@ import ThemeOverviewCard from './ThemeOverviewCard';
 interface ThemeBasedOverviewProps {
   initiatives: Initiative[];
   selectedCategory: ThemeCategory | 'all';
-  onCategorySelect: (category: ThemeCategory) => void;
+  onCategorySelect: (category: ThemeCategory | 'all') => void;
 }
 
 const ThemeBasedOverview: React.FC<ThemeBasedOverviewProps> = ({
