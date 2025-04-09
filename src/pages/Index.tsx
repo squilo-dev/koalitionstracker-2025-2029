@@ -64,8 +64,8 @@ const Index = () => {
         <div className="mb-8">
           <Tabs defaultValue="themes" value={activeTab} onValueChange={value => setActiveTab(value as 'themes' | 'list')}>
             <TabsList className="mb-6">
-              <TabsTrigger value="themes">Themenbasierte Übersicht</TabsTrigger>
-              <TabsTrigger value="list">Listenansicht</TabsTrigger>
+              <TabsTrigger value="themes">Nach Ressort</TabsTrigger>
+              <TabsTrigger value="list">Alle Vorhaben</TabsTrigger>
             </TabsList>
             
             <TabsContent value="themes" className="space-y-8">
