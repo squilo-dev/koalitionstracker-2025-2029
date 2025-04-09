@@ -73,7 +73,9 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ type, initiativeId, onS
       const payload: SuggestionPayload = {
         type,
         initiative_id: initiativeId,
-        ...data,
+        name: data.name,
+        email: data.email,
+        content: data.content,
       };
 
       console.log('Sending suggestion:', payload);
