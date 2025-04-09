@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,21 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Coalition tracker specific colors
+				coalition: {
+					primary: '#9b87f5',
+					secondary: '#7E69AB',
+					tertiary: '#6E59A5',
+					dark: '#333333',
+					light: '#F1F0FB',
+				},
+				status: {
+					'nicht-begonnen': '#757575', // Gray
+					'begonnen': '#2196F3',       // Blue
+					'teilweise-umgesetzt': '#FFC107', // Amber
+					'umgesetzt': '#4CAF50',      // Green
+					'verschoben': '#F44336',     // Red
 				}
 			},
 			borderRadius: {
