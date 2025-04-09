@@ -22,7 +22,7 @@ const InitiativesList: React.FC<InitiativesListProps> = ({ initiatives, isLoadin
   if (initiatives.length === 0) {
     return (
       <div className="text-center py-10">
-        <p className="text-muted-foreground">Keine Initiativen gefunden.</p>
+        <p className="text-muted-foreground">Keine Vorhaben gefunden.</p>
       </div>
     );
   }

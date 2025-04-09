@@ -40,7 +40,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Suche nach Initiativen..."
+            placeholder="Suche nach Vorhaben..."
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -52,8 +52,8 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
             value={statusFilter}
             onValueChange={(value) => setStatusFilter(value as InitiativeStatus | 'all')}
           >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Status" />
+            <SelectTrigger className="w-[170px]">
+              <SelectValue placeholder="Nach Status filtern" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle Status</SelectItem>
@@ -69,8 +69,8 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
             value={categoryFilter}
             onValueChange={(value) => setCategoryFilter(value as ThemeCategory | 'all')}
           >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Kategorie" />
+            <SelectTrigger className="w-[170px]">
+              <SelectValue placeholder="Nach Kategorie filtern" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle Kategorien</SelectItem>
