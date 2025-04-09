@@ -1,10 +1,10 @@
-
 import React, { useState, useMemo } from 'react';
 import { 
   Initiative, 
   InitiativeStatus, 
   ThemeCategory, 
-  initiatives as initialInitiatives 
+  initiatives as initialInitiatives,
+  themeLabels 
 } from '@/data/coalitionData';
 import FilterSearchBar from '@/components/FilterSearchBar';
 import InitiativesList from '@/components/InitiativesList';
