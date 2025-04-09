@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Initiative, InitiativeStatus, ThemeCategory, initiatives as initialInitiatives, themeLabels } from '@/data/coalitionData';
 import FilterSearchBar from '@/components/FilterSearchBar';
@@ -6,8 +7,8 @@ import StatusBarChart from '@/components/StatusBarChart';
 import CategoryBarCharts from '@/components/CategoryBarCharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
-import OverallProgress from '@/components/OverallProgress';
 import { ExternalLink, Flag } from 'lucide-react';
+
 const Index = () => {
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +40,7 @@ const Index = () => {
     setStatusFilter('all');
     setCategoryFilter('all');
   };
+
   return <div className="min-h-screen flex flex-col">
       {/* German flag-inspired header */}
       <header className="bg-gradient-to-r from-black via-red-600 to-[#FFCC00] h-2" />
@@ -51,11 +53,6 @@ const Index = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Verfolgen Sie den Fortschritt bei der Umsetzung des <a href="https://www.wiwo.de/downloads/30290756/6/koalitionsvertrag-2025.pdf" target="_blank" rel="noopener noreferrer" className="text-coalition-primary underline inline-flex items-center">Koalitionsvertrags <ExternalLink className="h-3 w-3 ml-0.5" /></a> der Bundesregierung aus CDU/CSU und SPD.
           </p>
-        </div>
-        
-        {/* Overall Progress Bar */}
-        <div className="mb-8">
-          <OverallProgress initiatives={initialInitiatives} />
         </div>
         
         {/* Status Chart */}
@@ -115,4 +112,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
