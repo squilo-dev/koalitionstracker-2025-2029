@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,16 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { InitiativeStatus, ThemeCategory, statusLabels, themeLabels } from '@/data/coalitionData';
+import { InitiativeStatus, statusLabels } from '@/data/coalitionData';
 import { Search, X } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface FilterSearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   statusFilter: InitiativeStatus | 'all';
   setStatusFilter: (status: InitiativeStatus | 'all') => void;
-  categoryFilter: ThemeCategory | 'all';
-  setCategoryFilter: (category: ThemeCategory | 'all') => void;
   hasFilters: boolean;
   clearFilters: () => void;
 }
@@ -28,8 +26,6 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
   setSearchQuery,
   statusFilter,
   setStatusFilter,
-  categoryFilter,
-  setCategoryFilter,
   hasFilters,
   clearFilters
 }) => {
@@ -45,9 +41,19 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="absolute right-1 top-1 h-8 w-8" 
+              onClick={() => setSearchQuery('')}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <Select
             value={statusFilter}
             onValueChange={(value) => setStatusFilter(value as InitiativeStatus | 'all')}
@@ -65,38 +71,19 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
             </SelectContent>
           </Select>
           
-          <Select
-            value={categoryFilter}
-            onValueChange={(value) => setCategoryFilter(value as ThemeCategory | 'all')}
-          >
-            <SelectTrigger className="w-[170px]">
-              <SelectValue placeholder="Nach Kategorie filtern" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alle Kategorien</SelectItem>
-              {(Object.entries(themeLabels) as [ThemeCategory, string][]).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {hasFilters && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={clearFilters}
+              className="h-8 gap-1 text-sm text-muted-foreground"
+            >
+              <X className="h-3.5 w-3.5" />
+              Filter zurücksetzen
+            </Button>
+          )}
         </div>
       </div>
-      
-      {hasFilters && (
-        <div className="flex justify-end">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={clearFilters}
-            className="h-8 gap-1 text-sm text-muted-foreground"
-          >
-            <X className="h-3.5 w-3.5" />
-            Filter zurücksetzen
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Initiative, InitiativeStatus, ThemeCategory, statusLabels, getStatusCountsByCategory } from '@/data/coalitionData';
+import { Initiative, InitiativeStatus, ThemeCategory, statusLabels, getStatusCountsByCategory, themeLabels } from '@/data/coalitionData';
 import { cn } from '@/lib/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
@@ -16,12 +16,23 @@ interface StatusBarChartProps {
 const StatusBarChart: React.FC<StatusBarChartProps> = ({ 
   initiatives, 
   category, 
-  title = "Statusverteilung", 
+  title, 
   className,
   showPercentages = false
 }) => {
   const statusCounts = getStatusCountsByCategory(initiatives, category);
   const total = Object.values(statusCounts).reduce((sum, count) => sum + count, 0);
+
+  // Generate title if not provided
+  const generateTitle = () => {
+    if (title) return title;
+    
+    if (category) {
+      return `Fortschritt im Bundesministerium für ${themeLabels[category]}`;
+    }
+    
+    return "Gesamtfortschritt";
+  };
 
   // Order of statuses in the bar
   const statusOrder: InitiativeStatus[] = [
@@ -45,7 +56,7 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
   return (
     <Card className={cn("w-full", className)}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardTitle className="text-lg">{generateTitle()}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

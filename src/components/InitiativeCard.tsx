@@ -32,6 +32,11 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative }) => {
     }
   ];
 
+  // Format date to German format
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('de-DE');
+  };
+
   return (
     <>
       <Card 
@@ -52,7 +57,7 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative }) => {
         </CardContent>
         <CardFooter className="text-xs text-muted-foreground pt-2 mt-auto flex items-center border-t">
           <CalendarIcon className="h-3 w-3 mr-1" />
-          Letzte Aktualisierung: {new Date(lastUpdated).toLocaleDateString('de-DE')}
+          Letzte Aktualisierung: {formatDate(lastUpdated)}
         </CardFooter>
       </Card>
       
@@ -87,7 +92,10 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative }) => {
                 <div className="space-y-3">
                   {recentDevelopments.map(dev => (
                     <div key={dev.id} className="flex justify-between items-center text-sm">
-                      <span>{dev.title}</span>
+                      <div>
+                        <span className="text-xs text-muted-foreground mr-2">{formatDate(dev.date)}</span>
+                        <span>{dev.title}</span>
+                      </div>
                       <Button variant="link" size="sm" className="text-xs" asChild>
                         <a href={dev.url} target="_blank" rel="noopener noreferrer">
                           Mehr erfahren

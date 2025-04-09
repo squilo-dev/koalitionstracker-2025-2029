@@ -72,7 +72,7 @@ export default {
 					light: '#F1F0FB',
 				},
 				status: {
-					'nicht-begonnen': '#757575', // Gray
+					'nicht-begonnen': '#aaadb0', // Lighter gray color
 					'begonnen': '#2196F3',       // Blue
 					'teilweise-umgesetzt': '#FFC107', // Amber
 					'umgesetzt': '#4CAF50',      // Green

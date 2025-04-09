@@ -17,6 +17,15 @@ const ThemeBasedOverview: React.FC<ThemeBasedOverviewProps> = ({
   // Get all unique categories from initiatives
   const categories = Object.keys(themeLabels) as ThemeCategory[];
   
+  // Toggle category selection (if already selected, deselect it)
+  const handleCategoryClick = (category: ThemeCategory) => {
+    if (selectedCategory === category) {
+      onCategorySelect('all'); // Deselect if already selected
+    } else {
+      onCategorySelect(category); // Select if not selected
+    }
+  };
+  
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -29,7 +38,7 @@ const ThemeBasedOverview: React.FC<ThemeBasedOverviewProps> = ({
               key={category} 
               category={category} 
               initiatives={initiatives} 
-              onClick={() => onCategorySelect(category)} 
+              onClick={() => handleCategoryClick(category)} 
               isActive={selectedCategory === category} 
             />
           );
