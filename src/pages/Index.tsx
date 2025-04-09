@@ -7,8 +7,10 @@ import InitiativesList from '@/components/InitiativesList';
 import StatusBarChart from '@/components/StatusBarChart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
-import { ExternalLink } from 'lucide-react';
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { ExternalLink, Bug, Heart } from 'lucide-react';
 import { getInitiatives, getThemeCategories, getInitiativeStatuses } from '@/services/initiativeService';
+import SuggestionForm from '@/components/SuggestionForm';
 
 const Index = () => {
   // State for search and filters
@@ -16,6 +18,8 @@ const Index = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState<'themes' | 'list'>('themes');
+  const [showBugReport, setShowBugReport] = useState(false);
+  const [showDonation, setShowDonation] = useState(false);
 
   // Fetch data using React Query
   const { data: initiatives = [], isLoading: isLoadingInitiatives } = useQuery({
@@ -183,12 +187,46 @@ const Index = () => {
         </div>
       </div>
       
-      {/* Custom footer with German flag */}
+      {/* Custom footer with German flag and action buttons */}
       <footer className="mt-auto bg-gray-100 py-4">
-        <div className="container mx-auto px-4 flex justify-center items-center gap-2">
-          <p className="text-muted-foreground text-sm">Entwickelt in Deutschland für Deutschland 🇩🇪</p>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-muted-foreground text-sm">Entwickelt in Deutschland für Deutschland 🇩🇪</p>
+            
+            <div className="flex items-center gap-4">
+              <AlertDialog open={showBugReport} onOpenChange={setShowBugReport}>
+                <AlertDialogTrigger asChild>
+                  <button className="text-sm text-muted-foreground hover:text-coalition-primary flex items-center gap-1">
+                    <Bug className="h-4 w-4" /> Fehler melden
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-md">
+                  <SuggestionForm 
+                    type="bug" 
+                    onSuccess={() => setShowBugReport(false)} 
+                  />
+                </AlertDialogContent>
+              </AlertDialog>
+              
+              <AlertDialog open={showDonation} onOpenChange={setShowDonation}>
+                <AlertDialogTrigger asChild>
+                  <button className="text-sm text-muted-foreground hover:text-coalition-primary flex items-center gap-1">
+                    <Heart className="h-4 w-4" /> Unterstütze uns
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-md">
+                  <div className="p-4 text-center">
+                    <Heart className="h-16 w-16 mx-auto mb-4 text-red-500" />
+                    <h2 className="text-xl font-bold mb-4">Unterstütze uns</h2>
+                    <p className="text-muted-foreground">Spenden können aktuell noch nicht angenommen werden.</p>
+                  </div>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
         </div>
       </footer>
+      
     </div>;
 };
 

@@ -4,7 +4,9 @@ import {
   Initiative, 
   InitiativeStatus, 
   ThemeCategory, 
-  RecentDevelopment 
+  RecentDevelopment,
+  VotePayload,
+  SuggestionPayload
 } from "@/types/supabase";
 
 export async function getThemeCategories(): Promise<ThemeCategory[]> {
@@ -75,6 +77,24 @@ export async function getInitiativeById(id: string): Promise<Initiative | null> 
   }
   
   return data;
+}
+
+// This function would be implemented with a real backend
+export async function submitVote(payload: VotePayload): Promise<void> {
+  // In a real implementation, this would update vote counts in the database
+  console.log('Vote submitted:', payload);
+  
+  // Since we're storing votes in localStorage for this demo, we don't need a real implementation
+  // In a production app, this would make an API call
+}
+
+// This function would be implemented with a real backend
+export async function submitSuggestion(payload: SuggestionPayload): Promise<void> {
+  // In a real implementation, this would send an email and/or store the suggestion
+  console.log('Suggestion submitted:', payload);
+  
+  // In a production app, this would send an email to louis.muench2@gmail.com
+  // We're just logging to console for this demo
 }
 
 export function getStatusCountsByCategory(

@@ -20,6 +20,8 @@ export interface Initiative {
   last_updated: string;
   koalitionsvertrag_text?: string;
   koalitionsvertrag_page?: number;
+  upvotes?: number;
+  downvotes?: number;
 }
 
 export interface RecentDevelopment {
@@ -28,4 +30,17 @@ export interface RecentDevelopment {
   date: string;
   title: string;
   url?: string;
+}
+
+export interface VotePayload {
+  initiative_id: string;
+  vote_type: 'up' | 'down';
+}
+
+export interface SuggestionPayload {
+  type: 'edit' | 'development' | 'bug';
+  initiative_id?: string;
+  name: string;
+  email: string;
+  content: string;
 }
