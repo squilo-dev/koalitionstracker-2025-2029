@@ -28,7 +28,7 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
     if (title) return title;
     
     if (category) {
-      return `Fortschritt im Bundesministerium für ${themeLabels[category]}`;
+      return `Fortschritt beim Thema ${themeLabels[category]}`;
     }
     
     return "Gesamtfortschritt";
