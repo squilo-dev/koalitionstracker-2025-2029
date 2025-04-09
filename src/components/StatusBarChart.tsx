@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Initiative, InitiativeStatus, ThemeCategory, statusLabels, getStatusCountsByCategory } from '@/data/coalitionData';
 import { cn } from '@/lib/utils';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface StatusBarChartProps {
   initiatives: Initiative[];
@@ -29,6 +30,12 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
     'verschoben'
   ];
 
+  // Calculate percentages for each status
+  const statusPercentages = statusOrder.reduce((acc, status) => {
+    acc[status] = total > 0 ? (statusCounts[status] / total) * 100 : 0;
+    return acc;
+  }, {} as Record<InitiativeStatus, number>);
+
   const getStatusColor = (status: InitiativeStatus) => {
     return `bg-status-${status}`;
   };
@@ -40,38 +47,57 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
-            {statusOrder.map((status) => {
-              const count = statusCounts[status];
-              const percentage = total > 0 ? (count / total) * 100 : 0;
-              
-              return percentage > 0 ? (
-                <div
-                  key={status}
-                  className={cn(
-                    getStatusColor(status),
-                    "h-full transition-all duration-500"
-                  )}
-                  style={{ width: `${percentage}%` }}
-                  title={`${statusLabels[status]}: ${count} (${percentage.toFixed(1)}%)`}
-                ></div>
-              ) : null;
-            })}
-          </div>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <div className="h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
+                {statusOrder.map((status) => {
+                  const percentage = statusPercentages[status];
+                  
+                  return percentage > 0 ? (
+                    <div
+                      key={status}
+                      className={cn(
+                        getStatusColor(status),
+                        "h-full transition-all duration-500"
+                      )}
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  ) : null;
+                })}
+              </div>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-auto p-2">
+              <div className="text-xs space-y-1">
+                {statusOrder.map((status) => {
+                  const count = statusCounts[status];
+                  const percentage = statusPercentages[status];
+                  
+                  return percentage > 0 ? (
+                    <div key={status} className="flex items-center gap-1.5">
+                      <div className={cn("w-2 h-2 rounded-sm", getStatusColor(status))}></div>
+                      <span>
+                        {statusLabels[status]}: {percentage.toFixed(1)}% ({count})
+                      </span>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            </HoverCardContent>
+          </HoverCard>
           
           <div className="flex flex-wrap gap-3">
             {statusOrder.map((status) => {
               const count = statusCounts[status];
               const percentage = total > 0 ? (count / total) * 100 : 0;
               
-              return (
+              return count > 0 ? (
                 <div key={status} className="flex items-center gap-1.5">
                   <div className={cn("w-3 h-3 rounded-sm", getStatusColor(status))}></div>
                   <span className="text-sm">
                     {statusLabels[status]} ({count})
                   </span>
                 </div>
-              );
+              ) : null;
             })}
           </div>
         </div>

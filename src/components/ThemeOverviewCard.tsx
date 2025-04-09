@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { ThemeCategory, Initiative, themeLabels, getStatusCountsByCategory } from '@/data/coalitionData';
-import StatusBarChart from './StatusBarChart';
+import { ThemeCategory, Initiative, themeLabels, getStatusCountsByCategory, statusLabels } from '@/data/coalitionData';
 import { 
   BookOpen, Briefcase, Building, Cloud, Database, Globe, Heart, 
   Shield, Truck, Wallet, FileText 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from "@/components/ui/progress";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface ThemeOverviewCardProps {
   category: ThemeCategory;
@@ -51,6 +51,24 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
     }
   };
 
+  const statusOrder: InitiativeStatus[] = [
+    'umgesetzt',
+    'teilweise-umgesetzt',
+    'begonnen',
+    'nicht-begonnen',
+    'verschoben'
+  ];
+
+  // Calculate percentages for each status
+  const statusPercentages = statusOrder.reduce((acc, status) => {
+    acc[status] = total > 0 ? (statusCounts[status] / total) * 100 : 0;
+    return acc;
+  }, {} as Record<InitiativeStatus, number>);
+
+  const getStatusColor = (status: InitiativeStatus) => {
+    return `bg-status-${status}`;
+  };
+
   return (
     <Card 
       className={cn(
@@ -78,12 +96,43 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
           <Progress value={progressPercentage} className="h-2" />
         </div>
         
-        <div className="h-6 mt-3">
-          <StatusBarChart 
-            initiatives={filteredInitiatives} 
-            category={category}
-            className="h-3 mt-1"
-          />
+        <div className="mt-3">
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <div className="h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
+                {statusOrder.map((status) => {
+                  const percentage = statusPercentages[status];
+                  return percentage > 0 ? (
+                    <div
+                      key={status}
+                      className={cn(
+                        getStatusColor(status),
+                        "h-full transition-all duration-500"
+                      )}
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  ) : null;
+                })}
+              </div>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-auto p-2">
+              <div className="text-xs space-y-1">
+                {statusOrder.map((status) => {
+                  const count = statusCounts[status];
+                  const percentage = statusPercentages[status];
+                  
+                  return percentage > 0 ? (
+                    <div key={status} className="flex items-center gap-1.5">
+                      <div className={cn("w-2 h-2 rounded-sm", getStatusColor(status))}></div>
+                      <span>
+                        {statusLabels[status]}: {percentage.toFixed(1)}% ({count})
+                      </span>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         </div>
       </CardContent>
     </Card>

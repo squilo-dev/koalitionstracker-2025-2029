@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { 
   Initiative, 
@@ -86,7 +87,7 @@ const Index = () => {
         
         {/* Main Content */}
         <div className="mb-8">
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'themes' | 'list')}>
+          <Tabs defaultValue="themes" value={activeTab} onValueChange={(value) => setActiveTab(value as 'themes' | 'list')}>
             <TabsList className="mb-6">
               <TabsTrigger value="themes">Themenbasierte Übersicht</TabsTrigger>
               <TabsTrigger value="list">Listenansicht</TabsTrigger>
