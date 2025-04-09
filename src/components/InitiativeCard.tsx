@@ -4,14 +4,14 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Initiative, InitiativeStatus, ThemeCategory, RecentDevelopment } from '@/types/supabase';
 import StatusBadge from './StatusBadge';
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, EditIcon, PlusCircle, X } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { CalendarIcon, EditIcon, PlusCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { getRecentDevelopmentsByInitiative } from '@/services/initiativeService';
 import VoteButton from './VoteButton';
 import SuggestionForm from './SuggestionForm';
-import { Popover, PopoverContent, PopoverTrigger, PopoverClose } from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface InitiativeCardProps {
   initiative: Initiative;
@@ -36,16 +36,10 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
     return new Date(dateString).toLocaleDateString('de-DE');
   };
 
-  // Handle card click
-  const handleCardClick = () => {
-    setIsDialogOpen(true);
-  };
-
   return (
     <>
       <Card 
-        className="h-full flex flex-col hover:shadow-md transition-shadow cursor-pointer"
-        onClick={handleCardClick}
+        className="h-full flex flex-col hover:shadow-md transition-shadow"
       >
         <CardHeader className="pb-2 flex-grow-0">
           <div className="flex justify-between items-start gap-2 mb-2">
@@ -55,20 +49,18 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
             </Badge>
           </div>
           <div className="flex justify-between items-start">
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-lg font-semibold cursor-pointer" onClick={() => setIsDialogOpen(true)}>
               {title}
             </h3>
-            <div onClick={(e) => e.stopPropagation()}>
-              <VoteButton 
-                initiativeId={id} 
-                initialUpvotes={upvotes}
-                initialDownvotes={downvotes}
-                compact={true}
-              />
-            </div>
+            <VoteButton 
+              initiativeId={id} 
+              initialUpvotes={upvotes}
+              initialDownvotes={downvotes}
+              compact={true}
+            />
           </div>
         </CardHeader>
-        <CardContent className="flex-grow">
+        <CardContent className="flex-grow cursor-pointer" onClick={() => setIsDialogOpen(true)}>
           <p className="text-muted-foreground">{description}</p>
         </CardContent>
         <CardFooter className="text-xs text-muted-foreground pt-2 mt-auto flex items-center border-t">
@@ -79,11 +71,6 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
       
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
-          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogClose>
-          
           <DialogHeader>
             <div className="flex justify-between items-center">
               <DialogTitle>{title}</DialogTitle>
@@ -124,10 +111,6 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-96">
-                    <PopoverClose className="absolute right-4 top-4 inline-flex items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
-                      <X className="h-4 w-4" />
-                      <span className="sr-only">Close</span>
-                    </PopoverClose>
                     <SuggestionForm 
                       type="development" 
                       initiativeId={id} 
@@ -176,10 +159,6 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-96">
-                  <PopoverClose className="absolute right-4 top-4 inline-flex items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
-                    <X className="h-4 w-4" />
-                    <span className="sr-only">Close</span>
-                  </PopoverClose>
                   <SuggestionForm 
                     type="edit" 
                     initiativeId={id} 
