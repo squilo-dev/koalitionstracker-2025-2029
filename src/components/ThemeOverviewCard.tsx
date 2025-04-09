@@ -1,7 +1,13 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { ThemeCategory, Initiative, themeLabels, getStatusCountsByCategory, statusLabels } from '@/data/coalitionData';
+import { 
+  ThemeCategory, 
+  Initiative, 
+  themeLabels, 
+  getStatusCountsByCategory, 
+  statusLabels,
+  InitiativeStatus 
+} from '@/data/coalitionData';
 import { 
   BookOpen, Briefcase, Building, Cloud, Database, Globe, Heart, 
   Shield, Truck, Wallet, FileText 
@@ -27,13 +33,11 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
   const statusCounts = getStatusCountsByCategory(initiatives, category);
   const total = filteredInitiatives.length;
   
-  // Calculate progress percentage
   const implemented = statusCounts['umgesetzt'];
   const partiallyImplemented = statusCounts['teilweise-umgesetzt'] * 0.5; // Count partially implemented as half
   const progressPercentage = total > 0 ? 
     Math.round(((implemented + partiallyImplemented) / total) * 100) : 0;
 
-  // Get icon for category
   const getThemeIcon = () => {
     switch(category) {
       case 'Wirtschaft': return <Briefcase className="h-5 w-5" />;
@@ -59,7 +63,6 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
     'verschoben'
   ];
 
-  // Calculate percentages for each status
   const statusPercentages = statusOrder.reduce((acc, status) => {
     acc[status] = total > 0 ? (statusCounts[status] / total) * 100 : 0;
     return acc;
