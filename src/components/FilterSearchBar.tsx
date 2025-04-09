@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { InitiativeStatus, ThemeCategory, statusLabels, themeLabels } from '@/data/coalitionData';
+import { InitiativeStatus, ThemeCategory, statusLabels } from '@/data/coalitionData';
 import { Search, X } from 'lucide-react';
 
 interface FilterSearchBarProps {
@@ -34,7 +34,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
   clearFilters
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="flex-grow">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-grow">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -47,7 +47,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
           />
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <Select
             value={statusFilter}
             onValueChange={(value) => setStatusFilter(value as InitiativeStatus | 'all')}
@@ -65,38 +65,19 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
             </SelectContent>
           </Select>
           
-          <Select
-            value={categoryFilter}
-            onValueChange={(value) => setCategoryFilter(value as ThemeCategory | 'all')}
-          >
-            <SelectTrigger className="w-[170px]">
-              <SelectValue placeholder="Nach Kategorie filtern" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alle Kategorien</SelectItem>
-              {(Object.entries(themeLabels) as [ThemeCategory, string][]).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {hasFilters && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={clearFilters}
+              className="h-9 gap-1 text-sm text-muted-foreground"
+            >
+              <X className="h-3.5 w-3.5" />
+              Filter zurücksetzen
+            </Button>
+          )}
         </div>
       </div>
-      
-      {hasFilters && (
-        <div className="flex justify-end">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={clearFilters}
-            className="h-8 gap-1 text-sm text-muted-foreground"
-          >
-            <X className="h-3.5 w-3.5" />
-            Filter zurücksetzen
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
