@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
@@ -6,10 +7,11 @@ import InitiativesList from '@/components/InitiativesList';
 import StatusBarChart from '@/components/StatusBarChart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
-import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { ExternalLink, Bug, Heart } from 'lucide-react';
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger, AlertDialogClose } from "@/components/ui/alert-dialog";
+import { ExternalLink, Bug, Heart, X } from 'lucide-react';
 import { getInitiatives, getThemeCategories, getInitiativeStatuses } from '@/services/initiativeService';
 import SuggestionForm from '@/components/SuggestionForm';
+
 const Index = () => {
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -158,6 +160,10 @@ const Index = () => {
                   </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="max-w-md">
+                  <AlertDialogClose className="absolute right-4 top-4 inline-flex items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close</span>
+                  </AlertDialogClose>
                   <SuggestionForm type="bug" onSuccess={() => setShowBugReport(false)} />
                 </AlertDialogContent>
               </AlertDialog>
@@ -169,6 +175,10 @@ const Index = () => {
                   </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="max-w-md">
+                  <AlertDialogClose className="absolute right-4 top-4 inline-flex items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close</span>
+                  </AlertDialogClose>
                   <div className="p-4 text-center">
                     <Heart className="h-16 w-16 mx-auto mb-4 text-red-500" />
                     <h2 className="text-xl font-bold mb-4">Unterstütze uns</h2>

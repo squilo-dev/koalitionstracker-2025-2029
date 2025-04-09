@@ -27,39 +27,77 @@ export type Database = {
         }
         Relationships: []
       }
+      initiative_votes: {
+        Row: {
+          created_at: string
+          id: string
+          initiative_id: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          initiative_id: string
+          user_id: string
+          vote_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          initiative_id?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "initiative_votes_initiative_id_fkey"
+            columns: ["initiative_id"]
+            isOneToOne: false
+            referencedRelation: "initiatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       initiatives: {
         Row: {
           category_id: string
           date_added: string
           description: string
+          downvotes: number | null
           id: string
           koalitionsvertrag_page: number | null
           koalitionsvertrag_text: string | null
           last_updated: string
           status_id: string
           title: string
+          upvotes: number | null
         }
         Insert: {
           category_id: string
           date_added?: string
           description: string
+          downvotes?: number | null
           id?: string
           koalitionsvertrag_page?: number | null
           koalitionsvertrag_text?: string | null
           last_updated?: string
           status_id: string
           title: string
+          upvotes?: number | null
         }
         Update: {
           category_id?: string
           date_added?: string
           description?: string
+          downvotes?: number | null
           id?: string
           koalitionsvertrag_page?: number | null
           koalitionsvertrag_text?: string | null
           last_updated?: string
           status_id?: string
           title?: string
+          upvotes?: number | null
         }
         Relationships: [
           {
@@ -130,7 +168,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      handle_vote: {
+        Args: {
+          p_initiative_id: string
+          p_user_id: string
+          p_vote_type: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
