@@ -1,57 +1,56 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Initiative, InitiativeStatus, ThemeCategory, statusLabels, getStatusCountsByCategory, themeLabels } from '@/data/coalitionData';
+import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
+import { getStatusCountsByCategory, getStatusPercentages } from '@/services/initiativeService';
 import { cn } from '@/lib/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface StatusBarChartProps {
   initiatives: Initiative[];
-  category?: ThemeCategory;
+  categoryId?: string;
   title?: string;
   className?: string;
   showPercentages?: boolean;
+  statusMap: Record<string, InitiativeStatus>;
+  categoryMap: Record<string, ThemeCategory>;
 }
 
 const StatusBarChart: React.FC<StatusBarChartProps> = ({ 
   initiatives, 
-  category, 
+  categoryId, 
   title, 
   className,
-  showPercentages = false
+  showPercentages = false,
+  statusMap,
+  categoryMap
 }) => {
-  const statusCounts = getStatusCountsByCategory(initiatives, category);
+  const statusCounts = getStatusCountsByCategory(initiatives, statusMap, categoryId);
   const total = Object.values(statusCounts).reduce((sum, count) => sum + count, 0);
 
   // Generate title if not provided
   const generateTitle = () => {
     if (title) return title;
     
-    if (category) {
-      return `Fortschritt beim Thema ${themeLabels[category]}`;
+    if (categoryId && categoryMap[categoryId]) {
+      return `Fortschritt beim Thema ${categoryMap[categoryId].label}`;
     }
     
     return "Gesamtfortschritt";
   };
 
-  // Order of statuses in the bar
-  const statusOrder: InitiativeStatus[] = [
+  // Order statuses for display
+  const statusIds = Object.keys(statusMap);
+  const statusOrder = [
     'umgesetzt',
     'teilweise-umgesetzt',
     'begonnen',
     'nicht-begonnen',
     'verschoben'
-  ];
+  ].filter(id => statusIds.includes(id));
 
   // Calculate percentages for each status
-  const statusPercentages = statusOrder.reduce((acc, status) => {
-    acc[status] = total > 0 ? (statusCounts[status] / total) * 100 : 0;
-    return acc;
-  }, {} as Record<InitiativeStatus, number>);
-
-  const getStatusColor = (status: InitiativeStatus) => {
-    return `bg-status-${status}`;
-  };
+  const statusPercentages = getStatusPercentages(statusCounts);
 
   return (
     <Card className={cn("w-full", className)}>
@@ -63,17 +62,18 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
           <HoverCard>
             <HoverCardTrigger asChild>
               <div className="h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
-                {statusOrder.map((status) => {
-                  const percentage = statusPercentages[status];
+                {statusOrder.map((statusId) => {
+                  const percentage = statusPercentages[statusId] || 0;
+                  const status = statusMap[statusId];
                   
                   return percentage > 0 ? (
                     <div
-                      key={status}
-                      className={cn(
-                        getStatusColor(status),
-                        "h-full transition-all duration-500"
-                      )}
-                      style={{ width: `${percentage}%` }}
+                      key={statusId}
+                      className="h-full transition-all duration-500"
+                      style={{ 
+                        width: `${percentage}%`,
+                        backgroundColor: status?.color || '#cbd5e1' 
+                      }}
                     ></div>
                   ) : null;
                 })}
@@ -81,15 +81,19 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
             </HoverCardTrigger>
             <HoverCardContent className="w-auto p-2">
               <div className="text-xs space-y-1">
-                {statusOrder.map((status) => {
-                  const count = statusCounts[status];
-                  const percentage = statusPercentages[status];
+                {statusOrder.map((statusId) => {
+                  const count = statusCounts[statusId] || 0;
+                  const percentage = statusPercentages[statusId] || 0;
+                  const status = statusMap[statusId];
                   
                   return percentage > 0 ? (
-                    <div key={status} className="flex items-center gap-1.5">
-                      <div className={cn("w-2 h-2 rounded-sm", getStatusColor(status))}></div>
+                    <div key={statusId} className="flex items-center gap-1.5">
+                      <div 
+                        className="w-2 h-2 rounded-sm" 
+                        style={{ backgroundColor: status?.color || '#cbd5e1' }}
+                      ></div>
                       <span>
-                        {statusLabels[status]}: {percentage.toFixed(1)}% ({count})
+                        {status?.label}: {percentage.toFixed(1)}% ({count})
                       </span>
                     </div>
                   ) : null;
@@ -99,15 +103,19 @@ const StatusBarChart: React.FC<StatusBarChartProps> = ({
           </HoverCard>
           
           <div className="flex flex-wrap gap-3">
-            {statusOrder.map((status) => {
-              const count = statusCounts[status];
+            {statusOrder.map((statusId) => {
+              const count = statusCounts[statusId] || 0;
               const percentage = total > 0 ? (count / total) * 100 : 0;
+              const status = statusMap[statusId];
               
               return count > 0 ? (
-                <div key={status} className="flex items-center gap-1.5">
-                  <div className={cn("w-3 h-3 rounded-sm", getStatusColor(status))}></div>
+                <div key={statusId} className="flex items-center gap-1.5">
+                  <div 
+                    className="w-3 h-3 rounded-sm" 
+                    style={{ backgroundColor: status?.color || '#cbd5e1' }}
+                  ></div>
                   <span className="text-sm">
-                    {statusLabels[status]} {showPercentages 
+                    {status?.label} {showPercentages 
                       ? `(${percentage.toFixed(1)}%)` 
                       : `(${count})`}
                   </span>

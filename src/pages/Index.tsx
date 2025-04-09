@@ -1,38 +1,73 @@
 
-import React, { useState, useMemo } from 'react';
-import { Initiative, InitiativeStatus, ThemeCategory, initiatives as initialInitiatives, themeLabels } from '@/data/coalitionData';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
 import FilterSearchBar from '@/components/FilterSearchBar';
 import InitiativesList from '@/components/InitiativesList';
 import StatusBarChart from '@/components/StatusBarChart';
-import CategoryBarCharts from '@/components/CategoryBarCharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeBasedOverview from '@/components/ThemeBasedOverview';
-import { ExternalLink, Flag } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
+import { getInitiatives, getThemeCategories, getInitiativeStatuses } from '@/services/initiativeService';
 
 const Index = () => {
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<InitiativeStatus | 'all'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<ThemeCategory | 'all'>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState<'themes' | 'list'>('themes');
+
+  // Fetch data using React Query
+  const { data: initiatives = [], isLoading: isLoadingInitiatives } = useQuery({
+    queryKey: ['initiatives'],
+    queryFn: getInitiatives
+  });
+
+  const { data: themeCategories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ['themeCategories'],
+    queryFn: getThemeCategories
+  });
+
+  const { data: initiativeStatuses = [], isLoading: isLoadingStatuses } = useQuery({
+    queryKey: ['initiativeStatuses'],
+    queryFn: getInitiativeStatuses
+  });
+
+  // Convert arrays to lookup maps for easier access
+  const categoryMap = useMemo(() => {
+    return themeCategories.reduce((acc, category) => {
+      acc[category.id] = category;
+      return acc;
+    }, {} as Record<string, ThemeCategory>);
+  }, [themeCategories]);
+
+  const statusMap = useMemo(() => {
+    return initiativeStatuses.reduce((acc, status) => {
+      acc[status.id] = status;
+      return acc;
+    }, {} as Record<string, InitiativeStatus>);
+  }, [initiativeStatuses]);
 
   // Check if any filters are applied
   const hasFilters = searchQuery !== '' || statusFilter !== 'all' || categoryFilter !== 'all';
 
   // Filter initiatives based on search and filters
   const filteredInitiatives = useMemo(() => {
-    return initialInitiatives.filter(initiative => {
+    return initiatives.filter(initiative => {
       // Apply search filter
-      const matchesSearch = searchQuery === '' || initiative.title.toLowerCase().includes(searchQuery.toLowerCase()) || initiative.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = searchQuery === '' || 
+        initiative.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        initiative.description.toLowerCase().includes(searchQuery.toLowerCase());
 
       // Apply status filter
-      const matchesStatus = statusFilter === 'all' || initiative.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || initiative.status_id === statusFilter;
 
       // Apply category filter
-      const matchesCategory = categoryFilter === 'all' || initiative.category === categoryFilter;
+      const matchesCategory = categoryFilter === 'all' || initiative.category_id === categoryFilter;
+      
       return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [searchQuery, statusFilter, categoryFilter]);
+  }, [searchQuery, statusFilter, categoryFilter, initiatives]);
 
   // Function to clear all filters
   const clearFilters = () => {
@@ -40,6 +75,8 @@ const Index = () => {
     setStatusFilter('all');
     setCategoryFilter('all');
   };
+
+  const isLoading = isLoadingInitiatives || isLoadingCategories || isLoadingStatuses;
 
   return <div className="min-h-screen flex flex-col">
       {/* German flag-inspired header */}
@@ -57,12 +94,30 @@ const Index = () => {
         
         {/* Status Chart */}
         <div className="mb-8">
-          <StatusBarChart initiatives={filteredInitiatives} category={categoryFilter !== 'all' ? categoryFilter as ThemeCategory : undefined} showPercentages={true} />
+          {isLoading ? (
+            <div className="h-24 animate-pulse bg-gray-100 rounded-lg"></div>
+          ) : (
+            <StatusBarChart 
+              initiatives={filteredInitiatives} 
+              categoryId={categoryFilter !== 'all' ? categoryFilter : undefined}
+              statusMap={statusMap}
+              categoryMap={categoryMap}
+              showPercentages={true} 
+            />
+          )}
         </div>
         
         {/* Filter and Search */}
         <div className="mb-8">
-          <FilterSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} hasFilters={hasFilters} clearFilters={clearFilters} />
+          <FilterSearchBar 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery} 
+            statusFilter={statusFilter} 
+            setStatusFilter={setStatusFilter} 
+            statusMap={statusMap}
+            hasFilters={hasFilters} 
+            clearFilters={clearFilters} 
+          />
         </div>
         
         {/* Main Content */}
@@ -74,30 +129,54 @@ const Index = () => {
             </TabsList>
             
             <TabsContent value="themes" className="space-y-8">
-              <ThemeBasedOverview initiatives={filteredInitiatives} selectedCategory={categoryFilter} onCategorySelect={setCategoryFilter} />
+              <ThemeBasedOverview 
+                initiatives={filteredInitiatives} 
+                selectedCategory={categoryFilter} 
+                onCategorySelect={setCategoryFilter} 
+                isLoading={isLoading}
+                categoryMap={categoryMap}
+                statusMap={statusMap}
+              />
               
               {categoryFilter !== 'all' && <div className="mt-8">
                   <h2 className="text-xl font-semibold mb-4">
-                    {themeLabels[categoryFilter as ThemeCategory]} ({filteredInitiatives.length} Vorhaben)
+                    {categoryMap[categoryFilter]?.label} ({filteredInitiatives.length} Vorhaben)
                   </h2>
-                  <InitiativesList initiatives={filteredInitiatives} />
+                  <InitiativesList 
+                    initiatives={filteredInitiatives} 
+                    isLoading={isLoading}
+                    categoryMap={categoryMap}
+                    statusMap={statusMap}
+                  />
                 </div>}
               
               {categoryFilter === 'all' && hasFilters && <div className="mt-8">
                   <h2 className="text-xl font-semibold mb-4">
                     Gefilterte Vorhaben ({filteredInitiatives.length})
                   </h2>
-                  <InitiativesList initiatives={filteredInitiatives} />
+                  <InitiativesList 
+                    initiatives={filteredInitiatives} 
+                    isLoading={isLoading}
+                    categoryMap={categoryMap}
+                    statusMap={statusMap}
+                  />
                 </div>}
             </TabsContent>
             
             <TabsContent value="list" className="space-y-8">
               <div>
                 <h2 className="text-xl font-semibold mb-4">
-                  {categoryFilter !== 'all' ? `${themeLabels[categoryFilter as ThemeCategory]} (${filteredInitiatives.length} Vorhaben)` : `Alle Vorhaben (${filteredInitiatives.length})`}
+                  {categoryFilter !== 'all' 
+                    ? `${categoryMap[categoryFilter]?.label} (${filteredInitiatives.length} Vorhaben)` 
+                    : `Alle Vorhaben (${filteredInitiatives.length})`}
                 </h2>
                 
-                <InitiativesList initiatives={filteredInitiatives} />
+                <InitiativesList 
+                  initiatives={filteredInitiatives} 
+                  isLoading={isLoading}
+                  categoryMap={categoryMap}
+                  statusMap={statusMap}
+                />
               </div>
             </TabsContent>
           </Tabs>

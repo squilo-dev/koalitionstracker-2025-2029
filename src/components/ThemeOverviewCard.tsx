@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { ThemeCategory, Initiative, themeLabels, getStatusCountsByCategory, statusLabels, InitiativeStatus } from '@/data/coalitionData';
+import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
+import { getStatusCountsByCategory } from '@/services/initiativeService';
 import { 
   BookOpen, 
   Briefcase, 
@@ -23,29 +24,33 @@ import { cn } from '@/lib/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface ThemeOverviewCardProps {
-  category: ThemeCategory;
+  categoryId: string;
   initiatives: Initiative[];
   onClick: () => void;
   isActive: boolean;
+  categoryMap: Record<string, ThemeCategory>;
+  statusMap: Record<string, InitiativeStatus>;
 }
 
 const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
-  category,
+  categoryId,
   initiatives,
   onClick,
-  isActive
+  isActive,
+  categoryMap,
+  statusMap
 }) => {
-  const filteredInitiatives = initiatives.filter(i => i.category === category);
-  const statusCounts = getStatusCountsByCategory(initiatives, category);
+  const filteredInitiatives = initiatives.filter(i => i.category_id === categoryId);
+  const statusCounts = getStatusCountsByCategory(initiatives, statusMap, categoryId);
   const total = filteredInitiatives.length;
   
-  const implemented = statusCounts['umgesetzt'];
-  const partiallyImplemented = statusCounts['teilweise-umgesetzt'] * 0.5; // Count partially implemented as half
+  const implemented = statusCounts['umgesetzt'] || 0;
+  const partiallyImplemented = (statusCounts['teilweise-umgesetzt'] || 0) * 0.5; // Count partially implemented as half
   const progressPercentage = total > 0 ? Math.round((implemented + partiallyImplemented) / total * 100) : 0;
   
   const getThemeIcon = () => {
     // Each category has a unique icon
-    switch (category) {
+    switch (categoryId) {
       case 'Wirtschaft':
         return <Briefcase className="h-5 w-5" />;
       case 'Klima & Umwelt':
@@ -73,16 +78,14 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
     }
   };
   
-  const statusOrder: InitiativeStatus[] = ['umgesetzt', 'teilweise-umgesetzt', 'begonnen', 'nicht-begonnen', 'verschoben'];
+  // Order of statuses for display
+  const statusOrder = ['umgesetzt', 'teilweise-umgesetzt', 'begonnen', 'nicht-begonnen', 'verschoben'];
   
-  const statusPercentages = statusOrder.reduce((acc, status) => {
-    acc[status] = total > 0 ? statusCounts[status] / total * 100 : 0;
-    return acc;
-  }, {} as Record<InitiativeStatus, number>);
-  
-  const getStatusColor = (status: InitiativeStatus) => {
-    return `bg-status-${status}`;
-  };
+  // Calculate status percentages
+  const statusPercentages: Record<string, number> = {};
+  statusOrder.forEach(statusId => {
+    statusPercentages[statusId] = total > 0 ? (statusCounts[statusId] || 0) / total * 100 : 0;
+  });
   
   return (
     <Card 
@@ -98,7 +101,7 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
             {getThemeIcon()}
           </div>
           <div>
-            <h3 className="text-lg font-medium">{themeLabels[category]}</h3>
+            <h3 className="text-lg font-medium">{categoryMap[categoryId]?.label || categoryId}</h3>
             <p className="text-sm text-muted-foreground">{total} Vorhaben</p>
           </div>
         </div>
@@ -107,13 +110,18 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
           <HoverCard>
             <HoverCardTrigger asChild>
               <div className="h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
-                {statusOrder.map(status => {
-                  const percentage = statusPercentages[status];
+                {statusOrder.map(statusId => {
+                  const percentage = statusPercentages[statusId] || 0;
+                  const status = statusMap[statusId];
+                  
                   return percentage > 0 ? (
                     <div 
-                      key={status} 
-                      className={cn(getStatusColor(status), "h-full transition-all duration-500")} 
-                      style={{ width: `${percentage}%` }}
+                      key={statusId} 
+                      className="h-full transition-all duration-500" 
+                      style={{ 
+                        width: `${percentage}%`,
+                        backgroundColor: status?.color || '#cbd5e1'
+                      }}
                     ></div>
                   ) : null;
                 })}
@@ -121,14 +129,19 @@ const ThemeOverviewCard: React.FC<ThemeOverviewCardProps> = ({
             </HoverCardTrigger>
             <HoverCardContent className="w-auto p-2">
               <div className="text-xs space-y-1">
-                {statusOrder.map(status => {
-                  const count = statusCounts[status];
-                  const percentage = statusPercentages[status];
+                {statusOrder.map(statusId => {
+                  const count = statusCounts[statusId] || 0;
+                  const percentage = statusPercentages[statusId] || 0;
+                  const status = statusMap[statusId];
+                  
                   return percentage > 0 ? (
-                    <div key={status} className="flex items-center gap-1.5">
-                      <div className={cn("w-2 h-2 rounded-sm", getStatusColor(status))}></div>
+                    <div key={statusId} className="flex items-center gap-1.5">
+                      <div 
+                        className="w-2 h-2 rounded-sm" 
+                        style={{ backgroundColor: status?.color || '#cbd5e1' }}
+                      ></div>
                       <span>
-                        {statusLabels[status]}: {percentage.toFixed(1)}% ({count})
+                        {status?.label}: {percentage.toFixed(1)}% ({count})
                       </span>
                     </div>
                   ) : null;

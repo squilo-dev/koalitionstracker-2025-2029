@@ -9,7 +9,122 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      initiative_statuses: {
+        Row: {
+          color: string
+          id: string
+          label: string
+        }
+        Insert: {
+          color: string
+          id: string
+          label: string
+        }
+        Update: {
+          color?: string
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
+      initiatives: {
+        Row: {
+          category_id: string
+          date_added: string
+          description: string
+          id: string
+          koalitionsvertrag_page: number | null
+          koalitionsvertrag_text: string | null
+          last_updated: string
+          status_id: string
+          title: string
+        }
+        Insert: {
+          category_id: string
+          date_added?: string
+          description: string
+          id?: string
+          koalitionsvertrag_page?: number | null
+          koalitionsvertrag_text?: string | null
+          last_updated?: string
+          status_id: string
+          title: string
+        }
+        Update: {
+          category_id?: string
+          date_added?: string
+          description?: string
+          id?: string
+          koalitionsvertrag_page?: number | null
+          koalitionsvertrag_text?: string | null
+          last_updated?: string
+          status_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "initiatives_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "theme_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "initiatives_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "initiative_statuses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recent_developments: {
+        Row: {
+          date: string
+          id: string
+          initiative_id: string
+          title: string
+          url: string | null
+        }
+        Insert: {
+          date?: string
+          id?: string
+          initiative_id: string
+          title: string
+          url?: string | null
+        }
+        Update: {
+          date?: string
+          id?: string
+          initiative_id?: string
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recent_developments_initiative_id_fkey"
+            columns: ["initiative_id"]
+            isOneToOne: false
+            referencedRelation: "initiatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      theme_categories: {
+        Row: {
+          id: string
+          label: string
+        }
+        Insert: {
+          id: string
+          label: string
+        }
+        Update: {
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

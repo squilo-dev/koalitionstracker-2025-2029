@@ -1,14 +1,21 @@
 
 import React from 'react';
-import { Initiative } from '@/data/coalitionData';
+import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
 import InitiativeCard from './InitiativeCard';
 
 interface InitiativesListProps {
   initiatives: Initiative[];
   isLoading?: boolean;
+  categoryMap: Record<string, ThemeCategory>;
+  statusMap: Record<string, InitiativeStatus>;
 }
 
-const InitiativesList: React.FC<InitiativesListProps> = ({ initiatives, isLoading = false }) => {
+const InitiativesList: React.FC<InitiativesListProps> = ({ 
+  initiatives, 
+  isLoading = false,
+  categoryMap,
+  statusMap
+}) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -30,7 +37,12 @@ const InitiativesList: React.FC<InitiativesListProps> = ({ initiatives, isLoadin
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {initiatives.map((initiative) => (
-        <InitiativeCard key={initiative.id} initiative={initiative} />
+        <InitiativeCard 
+          key={initiative.id} 
+          initiative={initiative} 
+          categoryMap={categoryMap}
+          statusMap={statusMap}
+        />
       ))}
     </div>
   );

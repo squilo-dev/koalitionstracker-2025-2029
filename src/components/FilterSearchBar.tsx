@@ -8,15 +8,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { InitiativeStatus, statusLabels } from '@/data/coalitionData';
+import { InitiativeStatus } from '@/types/supabase';
 import { Search, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface FilterSearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  statusFilter: InitiativeStatus | 'all';
-  setStatusFilter: (status: InitiativeStatus | 'all') => void;
+  statusFilter: string;
+  setStatusFilter: (status: string) => void;
+  statusMap: Record<string, InitiativeStatus>;
   hasFilters: boolean;
   clearFilters: () => void;
 }
@@ -26,6 +27,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
   setSearchQuery,
   statusFilter,
   setStatusFilter,
+  statusMap,
   hasFilters,
   clearFilters
 }) => {
@@ -56,16 +58,16 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
         <div className="flex gap-3 items-center">
           <Select
             value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as InitiativeStatus | 'all')}
+            onValueChange={(value) => setStatusFilter(value)}
           >
             <SelectTrigger className="w-[170px]">
               <SelectValue placeholder="Nach Status filtern" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle Status</SelectItem>
-              {(Object.entries(statusLabels) as [InitiativeStatus, string][]).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
+              {Object.entries(statusMap).map(([id, status]) => (
+                <SelectItem key={id} value={id}>
+                  {status.label}
                 </SelectItem>
               ))}
             </SelectContent>
