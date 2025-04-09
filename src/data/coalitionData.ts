@@ -1,4 +1,3 @@
-
 export type InitiativeStatus = 'nicht-begonnen' | 'begonnen' | 'teilweise-umgesetzt' | 'umgesetzt' | 'verschoben';
 
 export type ThemeCategory = 
@@ -22,6 +21,10 @@ export interface Initiative {
   category: ThemeCategory;
   dateAdded: string; // ISO date string
   lastUpdated: string; // ISO date string
+  koalitionsvertrag?: {
+    text?: string;
+    page?: number;
+  };
 }
 
 export const statusLabels: Record<InitiativeStatus, string> = {
@@ -46,7 +49,6 @@ export const themeLabels: Record<ThemeCategory, string> = {
   'Finanzen': 'Finanzen'
 };
 
-// Initial data for the coalition tracker
 export const initiatives: Initiative[] = [
   {
     id: "1",
@@ -185,7 +187,6 @@ export const initiatives: Initiative[] = [
   }
 ];
 
-// Helper function to get count by status for a specific category
 export const getStatusCountsByCategory = (
   data: Initiative[],
   category?: ThemeCategory
@@ -203,7 +204,6 @@ export const getStatusCountsByCategory = (
   };
 };
 
-// Helper function to get all categories with their status distribution
 export const getCategoriesWithStatusCounts = (data: Initiative[]): {
   category: ThemeCategory;
   counts: Record<InitiativeStatus, number>;
@@ -223,7 +223,6 @@ export const getCategoriesWithStatusCounts = (data: Initiative[]): {
   });
 };
 
-// Helper function to calculate status distribution percentages
 export const getStatusPercentages = (counts: Record<InitiativeStatus, number>): Record<InitiativeStatus, number> => {
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
   if (total === 0) return {
