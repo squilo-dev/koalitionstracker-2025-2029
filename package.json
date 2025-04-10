@@ -47,7 +47,10 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+<<<<<<< HEAD
     "framer-motion": "^12.6.3",
+=======
+>>>>>>> 0a97a5df34ce3518b3416b20ce2cdaae39ac8656
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
@@ -57,7 +60,11 @@
     "react-hook-form": "^7.53.0",
     "react-resizable-panels": "^2.1.3",
     "react-router-dom": "^6.26.2",
+<<<<<<< HEAD
     "recharts": "^2.15.2",
+=======
+    "recharts": "^2.12.7",
+>>>>>>> 0a97a5df34ce3518b3416b20ce2cdaae39ac8656
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
