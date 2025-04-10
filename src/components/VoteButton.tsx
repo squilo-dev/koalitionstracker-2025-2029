@@ -56,10 +56,12 @@ const VoteButton: React.FC<VoteButtonProps> = ({
         
       if (error) throw error;
       
-      if (data && typeof data === 'object' && 'vote_type' in data) {
-        const voteData = data as VoteResponse;
-        if (voteData.vote_type) {
-          setUserVote(voteData.vote_type);
+      // Safely cast the response
+      if (data && typeof data === 'object') {
+        // Make sure the data has the required structure before casting
+        if ('vote_type' in data && typeof data.vote_type === 'string') {
+          const voteType = data.vote_type as 'up' | 'down' | null;
+          setUserVote(voteType);
         }
       }
     } catch (error) {
@@ -85,23 +87,26 @@ const VoteButton: React.FC<VoteButtonProps> = ({
       
       // Update local state based on response
       if (data && typeof data === 'object') {
-        const voteResponse = data as VoteResponse;
-        
-        // Get updated vote counts from the initiatives table
-        const { data: updatedInitiative, error: fetchError } = await supabase
-          .from('initiatives')
-          .select('upvotes, downvotes')
-          .eq('id', initiativeId)
-          .single();
-        
-        if (fetchError) throw fetchError;
-        
-        if (updatedInitiative) {
-          setUpvotes(updatedInitiative.upvotes || 0);
-          setDownvotes(updatedInitiative.downvotes || 0);
+        // Make sure the data has the required structure before using it
+        if ('vote_type' in data) {
+          const newVoteType = data.vote_type as 'up' | 'down' | null;
+          
+          // Get updated vote counts from the initiatives table
+          const { data: updatedInitiative, error: fetchError } = await supabase
+            .from('initiatives')
+            .select('upvotes, downvotes')
+            .eq('id', initiativeId)
+            .single();
+          
+          if (fetchError) throw fetchError;
+          
+          if (updatedInitiative) {
+            setUpvotes(updatedInitiative.upvotes || 0);
+            setDownvotes(updatedInitiative.downvotes || 0);
+          }
+          
+          setUserVote(newVoteType);
         }
-        
-        setUserVote(voteResponse.vote_type);
       }
       
     } catch (error) {
