@@ -21,22 +21,6 @@ export interface Initiative {
   last_updated: string;
   koalitionsvertrag_text?: string;
   koalitionsvertrag_page?: number;
-  upvotes?: number;
-  downvotes?: number;
-}
-
-export interface VotePayload {
-  initiative_id: string;
-  user_id: string;
-  vote_type: 'up' | 'down';
-}
-
-export interface InitiativeVote {
-  id: string;
-  initiative_id: string;
-  user_id: string;
-  vote_type: 'up' | 'down';
-  created_at: string;
 }
 
 export interface SuggestionPayload {

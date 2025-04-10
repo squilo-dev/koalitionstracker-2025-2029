@@ -1,11 +1,9 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Initiative, 
   InitiativeStatus, 
   ThemeCategory, 
   RecentDevelopment,
-  VotePayload,
   SuggestionPayload
 } from "@/types/supabase";
 
@@ -78,20 +76,6 @@ export async function getInitiativeById(id: string): Promise<Initiative | null> 
   }
   
   return data as Initiative;
-}
-
-export async function submitVote(payload: VotePayload): Promise<void> {
-  const { data, error } = await supabase
-    .rpc('handle_vote', {
-      p_initiative_id: payload.initiative_id,
-      p_user_id: payload.user_id,
-      p_vote_type: payload.vote_type
-    });
-  
-  if (error) {
-    console.error('Error submitting vote:', error);
-    throw error;
-  }
 }
 
 export async function submitSuggestion(payload: SuggestionPayload): Promise<void> {

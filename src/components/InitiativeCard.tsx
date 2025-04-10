@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { getRecentDevelopmentsByInitiative } from '@/services/initiativeService';
-import VoteButton from './VoteButton';
 import SuggestionForm from './SuggestionForm';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -20,7 +19,7 @@ interface InitiativeCardProps {
 }
 
 const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, categoryMap }) => {
-  const { id, title, description, status_id, category_id, last_updated, koalitionsvertrag_text, koalitionsvertrag_page, upvotes = 0, downvotes = 0 } = initiative;
+  const { id, title, description, status_id, category_id, last_updated, koalitionsvertrag_text, koalitionsvertrag_page } = initiative;
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [activeSuggestionType, setActiveSuggestionType] = React.useState<'edit' | 'development' | null>(null);
 
@@ -49,18 +48,10 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
               {categoryMap[category_id]?.label || category_id}
             </Badge>
           </div>
-          <div className="flex justify-between items-start">
+          <div>
             <h3 className="text-lg font-semibold">
               {title}
             </h3>
-            <div onClick={(e) => e.stopPropagation()}>
-              <VoteButton 
-                initiativeId={id} 
-                initialUpvotes={upvotes}
-                initialDownvotes={downvotes}
-                horizontal={true}
-              />
-            </div>
           </div>
         </CardHeader>
         <CardContent className="flex-grow">
@@ -77,19 +68,11 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
           <DialogHeader>
             <div className="flex justify-between items-center">
               <DialogTitle>{title}</DialogTitle>
-              <div className="flex items-center">
-                <VoteButton 
-                  initiativeId={id}
-                  initialUpvotes={upvotes}
-                  initialDownvotes={downvotes}
-                  horizontal={true}
-                />
-                <DialogClose className="ml-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                    <X className="h-4 w-4" />
-                  </Button>
-                </DialogClose>
-              </div>
+              <DialogClose className="ml-2">
+                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogClose>
             </div>
           </DialogHeader>
           
