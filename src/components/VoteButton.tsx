@@ -5,12 +5,18 @@ import { Button } from './ui/button';
 import { toast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '@/integrations/supabase/client';
+import { InitiativeVote } from '@/types/supabase';
 
 interface VoteButtonProps {
   initiativeId: string;
   initialUpvotes?: number;
   initialDownvotes?: number;
   horizontal?: boolean;
+}
+
+interface VoteResponse {
+  status: string;
+  vote_type: 'up' | 'down' | null;
 }
 
 const VoteButton: React.FC<VoteButtonProps> = ({ 
@@ -50,8 +56,11 @@ const VoteButton: React.FC<VoteButtonProps> = ({
         
       if (error) throw error;
       
-      if (data && data.vote_type) {
-        setUserVote(data.vote_type as 'up' | 'down');
+      if (data && typeof data === 'object' && 'vote_type' in data) {
+        const voteData = data as VoteResponse;
+        if (voteData.vote_type) {
+          setUserVote(voteData.vote_type);
+        }
       }
     } catch (error) {
       console.error('Error fetching user vote:', error);
@@ -75,8 +84,8 @@ const VoteButton: React.FC<VoteButtonProps> = ({
       if (error) throw error;
       
       // Update local state based on response
-      if (data) {
-        const { status, vote_type } = data;
+      if (data && typeof data === 'object') {
+        const voteResponse = data as VoteResponse;
         
         // Get updated vote counts from the initiatives table
         const { data: updatedInitiative, error: fetchError } = await supabase
@@ -92,7 +101,7 @@ const VoteButton: React.FC<VoteButtonProps> = ({
           setDownvotes(updatedInitiative.downvotes || 0);
         }
         
-        setUserVote(vote_type as 'up' | 'down' | null);
+        setUserVote(voteResponse.vote_type);
       }
       
     } catch (error) {
