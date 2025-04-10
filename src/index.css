@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,22 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Add dotted border with wider spacing */
+  .dotted-link {
+    @apply border-b border-dotted border-gray-700;
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    border-bottom-color: currentColor;
+    text-decoration-style: dotted;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 4px;
+    text-decoration-skip-ink: all;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    letter-spacing: 0.01em;
   }
 }

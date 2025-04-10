@@ -61,26 +61,34 @@ const CountdownTimer: React.FC = () => {
       
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogTrigger asChild>
-          <button className="text-sm text-muted-foreground border-b border-dotted border-muted-foreground">
+          <button className="text-sm text-muted-foreground dotted-link">
             Zeit bis Ende der Legislaturperiode
           </button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="sm:max-w-[500px]">
-          <AlertDialogHeader className="flex justify-between items-start">
+        <AlertDialogContent className="sm:max-w-[500px] relative">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsOpen(false)} 
+            className="absolute right-4 top-4"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Schließen</span>
+          </Button>
+          
+          <AlertDialogHeader>
             <AlertDialogTitle>Zur Berechnung des Countdowns</AlertDialogTitle>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <X className="h-4 w-4" />
-            </Button>
           </AlertDialogHeader>
-          <AlertDialogDescription className="space-y-4">
+          
+          <AlertDialogDescription className="space-y-4 text-black">
             <p>
-              Wie berechnet sich dieser Countdown? Die angezeigte Restzeit basiert auf dem spätestmöglichen regulären Wahltag der aktuellen Legislaturperiode gemäß Artikel 39 Absatz 1 des Grundgesetzes. Die Wahlperiode beträgt vier Jahre und beginnt mit dem ersten Zusammentritt des Bundestags (hier: 25. März 2025). Eine Neuwahl muss spätestens 48 Monate nach Beginn erfolgen.
+              Die angezeigte Restzeit basiert auf dem spätestmöglichen regulären Wahltag der aktuellen Legislaturperiode gemäß Artikel 39 Absatz 1 des Grundgesetzes. Die Wahlperiode beträgt vier Jahre und beginnt mit dem ersten Zusammentritt des Bundestags (hier: 25. März 2025). Eine Neuwahl muss spätestens 48 Monate nach Beginn erfolgen.
             </p>
             
             <Alert>
               <InfoIcon className="h-4 w-4" />
               <AlertTitle>Hinweis</AlertTitle>
-              <AlertDescription>
+              <AlertDescription className="text-muted-foreground">
                 Dieses Datum gilt nicht, wenn der Bundestag vorzeitig aufgelöst wird. In diesem Fall muss eine Neuwahl innerhalb von 60 Tagen stattfinden (Art. 39 Abs. 1 GG). Auch bei einem Rücktritt des Bundeskanzlers oder einem erfolgreichen konstruktiven Misstrauensvotum kann sich die Regierungszeit faktisch verkürzen.
               </AlertDescription>
             </Alert>

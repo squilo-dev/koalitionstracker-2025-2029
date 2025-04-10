@@ -1,165 +1,137 @@
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { SuggestionPayload } from '@/types/supabase';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
-
-const suggestionSchema = z.object({
-  name: z.string().min(2, { message: 'Name muss mindestens 2 Zeichen lang sein.' }),
-  email: z.string().email({ message: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' }),
-  content: z.string().min(10, { message: 'Inhalt muss mindestens 10 Zeichen lang sein.' }),
-});
+import { Label } from '@/components/ui/label';
 
 interface SuggestionFormProps {
-  type: 'edit' | 'development' | 'bug';
+  type: 'bug' | 'feature' | 'feedback';
   initiativeId?: string;
   onSuccess?: () => void;
 }
 
 const SuggestionForm: React.FC<SuggestionFormProps> = ({ type, initiativeId, onSuccess }) => {
-  const form = useForm<z.infer<typeof suggestionSchema>>({
-    resolver: zodResolver(suggestionSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      content: '',
-    },
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [content, setContent] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const getTitle = () => {
-    switch(type) {
-      case 'edit': return 'Änderung vorschlagen';
-      case 'development': return 'Neue Entwicklung vorschlagen';
-      case 'bug': return 'Fehler melden';
-      default: return 'Vorschlag einreichen';
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!content.trim()) {
+      toast({
+        title: "Bitte geben Sie Ihr Feedback ein",
+        description: "Die Nachricht darf nicht leer sein.",
+        variant: "destructive",
+      });
+      return;
     }
-  };
-
-  const getDescription = () => {
-    switch(type) {
-      case 'edit': return 'Schlagen Sie eine Änderung für dieses Vorhaben vor.';
-      case 'development': return 'Teilen Sie uns eine neue Entwicklung zu diesem Vorhaben mit.';
-      case 'bug': return 'Bitte beschreiben Sie den gefundenen Fehler so genau wie möglich.';
-      default: return 'Reichen Sie Ihren Vorschlag ein.';
-    }
-  };
-
-  const getContentPlaceholder = () => {
-    switch(type) {
-      case 'edit': return 'Ihre vorgeschlagene Änderung...';
-      case 'development': return 'Beschreiben Sie die neue Entwicklung und fügen Sie ggf. einen Link hinzu...';
-      case 'bug': return 'Beschreiben Sie den Fehler. Welche Schritte haben zum Fehler geführt?';
-      default: return 'Ihr Vorschlag...';
-    }
-  };
-
-  const onSubmit = async (data: z.infer<typeof suggestionSchema>) => {
+    
+    setIsSubmitting(true);
+    
     try {
-      // In a real app we would send this to an API endpoint
-      const payload: SuggestionPayload = {
-        type,
-        initiative_id: initiativeId,
-        name: data.name,
-        email: data.email,
-        content: data.content,
-      };
-
-      console.log('Sending suggestion:', payload);
+      // Mock submission
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Simulate submission success
       toast({
         title: "Vielen Dank!",
-        description: "Ihr Vorschlag wurde erfolgreich eingereicht.",
+        description: "Ihre Nachricht wurde erfolgreich übermittelt.",
       });
+      
+      setName('');
+      setEmail('');
+      setContent('');
       
       if (onSuccess) {
         onSuccess();
       }
-      
-      form.reset();
     } catch (error) {
-      console.error('Error submitting suggestion:', error);
       toast({
-        title: "Fehler",
-        description: "Es gab einen Fehler beim Einreichen Ihres Vorschlags. Bitte versuchen Sie es später erneut.",
+        title: "Fehler beim Senden",
+        description: "Bitte versuchen Sie es später erneut.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getTitle = () => {
+    switch (type) {
+      case 'bug':
+        return 'Problem melden';
+      case 'feature':
+        return 'Verbesserung vorschlagen';
+      case 'feedback':
+      default:
+        return 'Feedback geben';
+    }
+  };
+
+  const getDescription = () => {
+    switch (type) {
+      case 'bug':
+        return 'Haben Sie einen Fehler gefunden? Beschreiben Sie das Problem so genau wie möglich.';
+      case 'feature':
+        return 'Haben Sie eine Idee, wie wir den Tracker verbessern können?';
+      case 'feedback':
+      default:
+        return 'Teilen Sie Ihre Gedanken, Feedback oder Ideen mit uns und tragen Sie zur Verbesserung dieses Projekts bei.';
     }
   };
 
   return (
-    <div className="space-y-4 p-1">
-      <div className="space-y-2 text-center">
-        <h2 className="text-xl font-semibold">{getTitle()}</h2>
-        <p className="text-muted-foreground">{getDescription()}</p>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <h3 className="text-lg font-medium">{getTitle()}</h3>
+        <p className="text-muted-foreground mt-1">{getDescription()}</p>
       </div>
       
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ihr Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+      <div className="space-y-3">
+        <div>
+          <Label htmlFor="name">Name <span className="text-sm text-muted-foreground">(freiwillig)</span></Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ihr Name"
           />
-          
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>E-Mail</FormLabel>
-                <FormControl>
-                  <Input placeholder="ihre-email@beispiel.de" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        </div>
+        
+        <div>
+          <Label htmlFor="email">E-Mail <span className="text-sm text-muted-foreground">(freiwillig)</span></Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Ihre E-Mail-Adresse"
           />
-          
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Inhalt</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder={getContentPlaceholder()}
-                    className="min-h-[120px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        </div>
+        
+        <div>
+          <Label htmlFor="content">Ihre Nachricht</Label>
+          <Textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Beschreiben Sie Ihr Anliegen..."
+            rows={5}
+            required
           />
-          
-          <Button type="submit" className="w-full">Absenden</Button>
-        </form>
-      </Form>
-    </div>
+        </div>
+      </div>
+      
+      <Button 
+        type="submit" 
+        className="w-full bg-coalition-primary hover:bg-coalition-secondary"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Wird gesendet...' : 'Absenden'}
+      </Button>
+    </form>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
@@ -13,6 +12,7 @@ import SuggestionForm from '@/components/SuggestionForm';
 import CountdownTimer from '@/components/CountdownTimer';
 import InfoBar from '@/components/InfoBar';
 import Header from '@/components/Header';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   // State for search and filters
@@ -97,7 +97,7 @@ const Index = () => {
         <div className="mb-10">
           <div className="text-center mb-6">
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Verfolgen Sie den Fortschritt bei der Umsetzung des <a href="https://www.wiwo.de/downloads/30290756/6/koalitionsvertrag-2025.pdf" target="_blank" rel="noopener noreferrer" className="border-b border-dotted border-muted-foreground">Koalitionsvertrags</a> der Bundesregierung aus CDU/CSU und SPD.
+              Verfolgen Sie den Fortschritt bei der Umsetzung des <a href="https://www.wiwo.de/downloads/30290756/6/koalitionsvertrag-2025.pdf" target="_blank" rel="noopener noreferrer" className="dotted-link">Koalitionsvertrags</a> der Bundesregierung aus CDU/CSU und SPD.
             </p>
           </div>
           
@@ -206,12 +206,12 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm">Entwickelt in Deutschland 🇩🇪</p>
             <div className="flex items-center gap-4">
-              <a 
-                href="/about"
-                className="text-sm text-muted-foreground hover:text-coalition-primary border-b border-dotted border-muted-foreground"
+              <Link 
+                to="/about"
+                className="text-sm text-muted-foreground hover:text-coalition-primary dotted-link"
               >
                 Über das Projekt
-              </a>
+              </Link>
             </div>
           </div>
         </div>
