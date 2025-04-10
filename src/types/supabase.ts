@@ -1,4 +1,3 @@
-
 export interface ThemeCategory {
   id: string;
   label: string;
@@ -12,11 +11,11 @@ export interface InitiativeStatus {
 
 export interface Initiative {
   id: string;
+  created_at: string;
   title: string;
   description: string;
   status_id: string;
   category_id: string;
-  date_added: string;
   last_updated: string;
   koalitionsvertrag_text?: string;
   koalitionsvertrag_page?: number;
@@ -24,17 +23,18 @@ export interface Initiative {
   downvotes?: number;
 }
 
-export interface RecentDevelopment {
-  id: string;
-  initiative_id: string;
-  date: string;
-  title: string;
-  url?: string;
-}
-
 export interface VotePayload {
   initiative_id: string;
+  user_id: string;
   vote_type: 'up' | 'down';
+}
+
+export interface InitiativeVote {
+  id: string;
+  initiative_id: string;
+  user_id: string;
+  vote_type: 'up' | 'down';
+  created_at: string;
 }
 
 export interface SuggestionPayload {
@@ -43,4 +43,12 @@ export interface SuggestionPayload {
   name: string;
   email: string;
   content: string;
+}
+
+export interface RecentDevelopment {
+  id: string;
+  initiative_id: string;
+  title: string;
+  date: string;
+  url?: string;
 }

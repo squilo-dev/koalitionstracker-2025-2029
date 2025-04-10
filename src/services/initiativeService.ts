@@ -79,16 +79,20 @@ export async function getInitiativeById(id: string): Promise<Initiative | null> 
   return data;
 }
 
-// This function would be implemented with a real backend
 export async function submitVote(payload: VotePayload): Promise<void> {
-  // In a real implementation, this would update vote counts in the database
-  console.log('Vote submitted:', payload);
+  const { data, error } = await supabase
+    .rpc('handle_vote', {
+      p_initiative_id: payload.initiative_id,
+      p_user_id: payload.user_id,
+      p_vote_type: payload.vote_type
+    });
   
-  // Since we're storing votes in localStorage for this demo, we don't need a real implementation
-  // In a production app, this would make an API call
+  if (error) {
+    console.error('Error submitting vote:', error);
+    throw error;
+  }
 }
 
-// This function would be implemented with a real backend
 export async function submitSuggestion(payload: SuggestionPayload): Promise<void> {
   // In a real implementation, this would send an email and/or store the suggestion
   console.log('Suggestion submitted:', payload);

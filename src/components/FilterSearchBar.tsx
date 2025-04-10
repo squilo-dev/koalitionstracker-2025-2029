@@ -1,22 +1,21 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { InitiativeStatus } from '@/types/supabase';
-import { Search, X } from 'lucide-react';
+import { Search, X, Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuCheckboxItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 interface FilterSearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  statusFilter: string;
-  setStatusFilter: (status: string) => void;
+  statusFilter: string[];
+  setStatusFilter: (status: string[]) => void;
   statusMap: Record<string, InitiativeStatus>;
   hasFilters: boolean;
   clearFilters: () => void;
@@ -31,6 +30,33 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
   hasFilters,
   clearFilters
 }) => {
+  // Order statuses for display
+  const statusOrder = [
+    'umgesetzt',
+    'teilweise-umgesetzt',
+    'begonnen',
+    'nicht-begonnen',
+    'verschoben',
+  ].filter(id => Object.keys(statusMap).includes(id));
+
+  const toggleStatusFilter = (status: string) => {
+    if (statusFilter.includes(status)) {
+      setStatusFilter(statusFilter.filter(s => s !== status));
+    } else {
+      setStatusFilter([...statusFilter, status]);
+    }
+  };
+
+  const allSelected = statusFilter.length === 0 || statusFilter.length === Object.keys(statusMap).length;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setStatusFilter([]);
+    } else {
+      setStatusFilter(Object.keys(statusMap));
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3">
@@ -56,22 +82,38 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
         </div>
         
         <div className="flex gap-3 items-center">
-          <Select
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value)}
-          >
-            <SelectTrigger className="w-[170px]">
-              <SelectValue placeholder="Nach Status filtern" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alle Status</SelectItem>
-              {Object.entries(statusMap).map(([id, status]) => (
-                <SelectItem key={id} value={id}>
-                  {status.label}
-                </SelectItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="min-w-[170px] justify-between">
+                <span>{allSelected ? 'Alle Status' : `${statusFilter.length} Status ausgewählt`}</span>
+                <span className="ml-2">▼</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuCheckboxItem 
+                checked={allSelected}
+                onCheckedChange={toggleAll}
+              >
+                Alle Status
+              </DropdownMenuCheckboxItem>
+              
+              {statusOrder.map((statusId) => (
+                <DropdownMenuCheckboxItem 
+                  key={statusId}
+                  checked={statusFilter.includes(statusId) || allSelected}
+                  onCheckedChange={() => toggleStatusFilter(statusId)}
+                >
+                  <div className="flex items-center">
+                    <div 
+                      className="w-3 h-3 rounded-sm mr-2" 
+                      style={{ backgroundColor: statusMap[statusId]?.color || '#cbd5e1' }}
+                    ></div>
+                    {statusMap[statusId]?.label}
+                  </div>
+                </DropdownMenuCheckboxItem>
               ))}
-            </SelectContent>
-          </Select>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {hasFilters && (
             <Button 

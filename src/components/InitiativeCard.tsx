@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Initiative, InitiativeStatus, ThemeCategory, RecentDevelopment } from '@/types/supabase';
+import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
 import StatusBadge from './StatusBadge';
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, EditIcon, PlusCircle } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { CalendarIcon, EditIcon, PlusCircle, X } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { getRecentDevelopmentsByInitiative } from '@/services/initiativeService';
@@ -39,7 +39,8 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
   return (
     <>
       <Card 
-        className="h-full flex flex-col hover:shadow-md transition-shadow"
+        className="h-full flex flex-col hover:shadow-md transition-shadow cursor-pointer"
+        onClick={() => setIsDialogOpen(true)}
       >
         <CardHeader className="pb-2 flex-grow-0">
           <div className="flex justify-between items-start gap-2 mb-2">
@@ -49,18 +50,20 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
             </Badge>
           </div>
           <div className="flex justify-between items-start">
-            <h3 className="text-lg font-semibold cursor-pointer" onClick={() => setIsDialogOpen(true)}>
+            <h3 className="text-lg font-semibold">
               {title}
             </h3>
-            <VoteButton 
-              initiativeId={id} 
-              initialUpvotes={upvotes}
-              initialDownvotes={downvotes}
-              compact={true}
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <VoteButton 
+                initiativeId={id} 
+                initialUpvotes={upvotes}
+                initialDownvotes={downvotes}
+                horizontal={true}
+              />
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="flex-grow cursor-pointer" onClick={() => setIsDialogOpen(true)}>
+        <CardContent className="flex-grow">
           <p className="text-muted-foreground">{description}</p>
         </CardContent>
         <CardFooter className="text-xs text-muted-foreground pt-2 mt-auto flex items-center border-t">
@@ -74,11 +77,19 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
           <DialogHeader>
             <div className="flex justify-between items-center">
               <DialogTitle>{title}</DialogTitle>
-              <VoteButton 
-                initiativeId={id}
-                initialUpvotes={upvotes}
-                initialDownvotes={downvotes}
-              />
+              <div className="flex items-center">
+                <VoteButton 
+                  initiativeId={id}
+                  initialUpvotes={upvotes}
+                  initialDownvotes={downvotes}
+                  horizontal={true}
+                />
+                <DialogClose className="ml-2">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                    <X className="h-4 w-4" />
+                  </Button>
+                </DialogClose>
+              </div>
             </div>
           </DialogHeader>
           
