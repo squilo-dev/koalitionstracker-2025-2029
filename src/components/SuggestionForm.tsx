@@ -70,7 +70,7 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ type, initiativeId, onS
         return 'Korrektur vorschlagen';
       case 'feedback':
       default:
-        return 'Feedback geben';
+        return 'Teilen Sie Ihre Gedanken';
     }
   };
 
@@ -134,7 +134,7 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ type, initiativeId, onS
       
       <Button 
         type="submit" 
-        className="w-full bg-coalition-primary hover:bg-coalition-secondary"
+        className="w-full"
         disabled={isSubmitting}
       >
         {isSubmitting ? 'Wird gesendet...' : 'Absenden'}

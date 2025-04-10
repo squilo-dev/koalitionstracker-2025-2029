@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 
 const About: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" id="top">
       <InfoBar />
       <Header />
       
@@ -61,7 +61,7 @@ const About: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm">Entwickelt in Deutschland 🇩🇪</p>
             <div className="flex items-center gap-4">
-              <Link to="/about" className="text-sm text-muted-foreground hover:text-coalition-primary dotted-link">
+              <Link to="/about#top" className="text-sm text-muted-foreground hover:text-coalition-primary dotted-link">
                 Über das Projekt
               </Link>
             </div>

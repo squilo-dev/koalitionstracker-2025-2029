@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Heart, MessageSquare } from 'lucide-react';
+import { Heart, MessageSquare, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center px-4">
         <div className="flex items-center cursor-pointer" onClick={goToHomePage}>
           {germanFlag}
-          <h1 className={`font-bold transition-all duration-200 ${scrolled ? 'text-2xl' : 'text-3xl'} text-coalition-dark md:text-3xl sm:text-xl`}>
+          <h1 className={`font-bold transition-all duration-200 ${scrolled ? 'text-xl' : 'text-2xl'} text-coalition-dark md:text-3xl sm:text-lg truncate max-w-[200px] md:max-w-none`}>
             Koalitionstracker 2025–2029
           </h1>
         </div>
@@ -63,7 +63,7 @@ const Header: React.FC = () => {
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-bold">Teilen Sie Ihre Gedanken</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowFeedback(false)}>
-                  <MessageSquare className="h-4 w-4 md:hidden" />
+                  <X className="h-4 w-4" />
                   <span className="sr-only">Schließen</span>
                 </Button>
               </div>
@@ -74,7 +74,7 @@ const Header: React.FC = () => {
           {/* Mobile version - only icons */}
           <AlertDialog open={showFeedback} onOpenChange={setShowFeedback}>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" className="border border-black md:hidden">
+              <Button variant="outline" className="border border-black md:hidden px-2 h-8">
                 <MessageSquare className="h-4 w-4" />
               </Button>
             </AlertDialogTrigger>
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
           
           <AlertDialog open={showDonation} onOpenChange={setShowDonation}>
             <AlertDialogTrigger asChild>
-              <Button variant="default" className="hidden md:flex items-center gap-1.5 bg-coalition-primary hover:bg-coalition-secondary">
+              <Button variant="default" className="hidden md:flex items-center gap-1.5 bg-[#ffcc00] hover:bg-[#e6b800] text-black">
                 <Heart className="h-4 w-4" /> Unterstützen
               </Button>
             </AlertDialogTrigger>
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
                 <p className="text-muted-foreground mb-6">
                   Ihre Unterstützung schafft Transparenz. Helfen Sie uns, diese wichtige Plattform für die Dokumentation der Aktivitäten dieser Regierung zu erhalten und aus Rohdaten öffentliche Informationen zu machen.
                 </p>
-                <Button asChild className="bg-coalition-primary hover:bg-coalition-secondary w-full mb-4">
+                <Button asChild className="bg-[#ffcc00] hover:bg-[#e6b800] text-black w-full mb-4">
                   <a href="https://buymeacoffee.com/koalitionstracker" target="_blank" rel="noopener noreferrer">
                     Unterstützen
                   </a>
@@ -111,7 +111,7 @@ const Header: React.FC = () => {
           {/* Mobile version - only icons */}
           <AlertDialog open={showDonation} onOpenChange={setShowDonation}>
             <AlertDialogTrigger asChild>
-              <Button variant="default" className="md:hidden bg-coalition-primary hover:bg-coalition-secondary">
+              <Button variant="default" className="md:hidden bg-[#ffcc00] hover:bg-[#e6b800] text-black px-2 h-8">
                 <Heart className="h-4 w-4" />
               </Button>
             </AlertDialogTrigger>

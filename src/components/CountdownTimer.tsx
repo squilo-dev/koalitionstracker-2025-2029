@@ -65,7 +65,7 @@ const CountdownTimer: React.FC = () => {
             Zeit bis Ende der Legislaturperiode
           </button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="sm:max-w-[500px] relative">
+        <AlertDialogContent className="sm:max-w-[500px]">
           <Button 
             variant="ghost" 
             size="icon" 

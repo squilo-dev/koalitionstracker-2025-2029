@@ -207,7 +207,7 @@ const Index = () => {
             <p className="text-muted-foreground text-sm">Entwickelt in Deutschland 🇩🇪</p>
             <div className="flex items-center gap-4">
               <Link 
-                to="/about"
+                to="/about#top"
                 className="text-sm text-muted-foreground hover:text-coalition-primary dotted-link"
               >
                 Über das Projekt
