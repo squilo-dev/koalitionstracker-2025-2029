@@ -46,7 +46,8 @@ export async function getInitiatives(): Promise<Initiative[]> {
     return [];
   }
   
-  return data || [];
+  // Ensure consistency with our Initiative type
+  return (data as Initiative[]) || [];
 }
 
 export async function getRecentDevelopmentsByInitiative(initiativeId: string): Promise<RecentDevelopment[]> {
@@ -76,7 +77,7 @@ export async function getInitiativeById(id: string): Promise<Initiative | null> 
     return null;
   }
   
-  return data;
+  return data as Initiative;
 }
 
 export async function submitVote(payload: VotePayload): Promise<void> {

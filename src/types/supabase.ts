@@ -1,3 +1,4 @@
+
 export interface ThemeCategory {
   id: string;
   label: string;
@@ -11,7 +12,8 @@ export interface InitiativeStatus {
 
 export interface Initiative {
   id: string;
-  created_at: string;
+  created_at?: string;
+  date_added?: string;
   title: string;
   description: string;
   status_id: string;
