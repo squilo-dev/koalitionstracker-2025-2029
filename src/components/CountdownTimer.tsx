@@ -56,7 +56,7 @@ const CountdownTimer: React.FC = () => {
   return (
     <div className="text-center my-6">
       <div className="text-2xl font-bold mb-2">
-        {timeLeft.years} Jahre, {timeLeft.months} Monate, {timeLeft.days} Tage, {timeLeft.hours} Stunden, {timeLeft.minutes} Minuten
+        {timeLeft.years} Jahre, {timeLeft.months} Monate, {timeLeft.days} Tage, {timeLeft.hours} Stunden, {timeLeft.minutes} Minuten, {timeLeft.seconds} Sekunden
       </div>
       
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Initiative, InitiativeStatus, ThemeCategory } from '@/types/supabase';
 import StatusBadge from './StatusBadge';
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, EditIcon, PlusCircle, X } from 'lucide-react';
+import { CalendarIcon, EditIcon, PlusCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
@@ -68,11 +68,6 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
           <DialogHeader>
             <div className="flex justify-between items-center">
               <DialogTitle>{title}</DialogTitle>
-              <DialogClose className="ml-2">
-                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                  <X className="h-4 w-4" />
-                </Button>
-              </DialogClose>
             </div>
           </DialogHeader>
           
@@ -131,7 +126,7 @@ const InitiativeCard: React.FC<InitiativeCardProps> = ({ initiative, statusMap, 
                         <span>{dev.title}</span>
                       </div>
                       {dev.url && (
-                        <Button variant="link" size="sm" className="text-xs" asChild>
+                        <Button variant="link" size="sm" className="text-xs hover:text-[#FFCC00]" asChild>
                           <a href={dev.url} target="_blank" rel="noopener noreferrer">
                             Mehr erfahren
                           </a>
