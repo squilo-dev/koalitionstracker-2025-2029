@@ -24,7 +24,7 @@ export interface Initiative {
 }
 
 export interface SuggestionPayload {
-  type: 'edit' | 'development' | 'bug';
+  type: 'edit' | 'development' | 'bug' | 'feature' | 'feedback';
   initiative_id?: string;
   name: string;
   email: string;

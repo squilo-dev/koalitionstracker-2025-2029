@@ -7,7 +7,7 @@ import { toast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 
 interface SuggestionFormProps {
-  type: 'bug' | 'feature' | 'feedback';
+  type: 'bug' | 'feature' | 'feedback' | 'development' | 'edit';
   initiativeId?: string;
   onSuccess?: () => void;
 }
@@ -64,6 +64,10 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ type, initiativeId, onS
         return 'Problem melden';
       case 'feature':
         return 'Verbesserung vorschlagen';
+      case 'development':
+        return 'Neue Entwicklung';
+      case 'edit':
+        return 'Korrektur vorschlagen';
       case 'feedback':
       default:
         return 'Feedback geben';
@@ -76,6 +80,10 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ type, initiativeId, onS
         return 'Haben Sie einen Fehler gefunden? Beschreiben Sie das Problem so genau wie möglich.';
       case 'feature':
         return 'Haben Sie eine Idee, wie wir den Tracker verbessern können?';
+      case 'development':
+        return 'Informieren Sie uns über eine neue Entwicklung bei diesem Vorhaben.';
+      case 'edit':
+        return 'Haben Sie eine Korrektur für die Informationen zu diesem Vorhaben?';
       case 'feedback':
       default:
         return 'Teilen Sie Ihre Gedanken, Feedback oder Ideen mit uns und tragen Sie zur Verbesserung dieses Projekts bei.';
